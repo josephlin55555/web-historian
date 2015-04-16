@@ -8,8 +8,18 @@ var sendResponse = function(req, res, statusCode){
   res.writeHead(statusCode, hHelpers.headers);
   var truncatedUrl = req.url.substring(1);
   hHelpers.serveAssets(res, truncatedUrl);
-
 };
+
+var postResponse = function(req, res,statusCode){
+  statusCode = statusCode || 302;
+  res.writeHead(statusCode, hHelpers.headers);
+  // var parsedData = "where is this TODO TODO TODO";
+  hHelpers.collectData(req, function(data){
+    archive.addUrlToList(data);
+    res.end();
+  });
+
+}
 
 
 
@@ -18,7 +28,7 @@ var routing = {
     sendResponse(req, res);
   },
   'POST':function(req, res){
-    sendResponse(req, res);
+    postResponse(req, res, 302);
   },
   'OPTIONS':function(req,res){
     sendResponse(req, res);

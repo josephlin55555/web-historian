@@ -21,10 +21,24 @@ exports.serveAssets = function(res, asset, callback) {
 
   fs.readFile(target, 'utf-8', function(error, data) {
     if(error) {
-      throw error;
+      res.writeHead(404, headers);
+      res.end(data);
     }
     res.end(data);
   });
 };
+
+exports.collectData = function(request, callback){
+  var data = "";
+  request.on('data', function(chunk){
+    data += chunk;
+  });
+  request.on('end', function(){
+    data = "\"" + data.slice(4) + "\"";
+    console.log(data)
+    callback(JSON.parse(data));
+  });
+};
+
 
 // As you progress, keep thinking about what helper functions you can put here!

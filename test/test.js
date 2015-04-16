@@ -7,7 +7,7 @@ var path = require('path');
 var res;
 
 archive.initialize({
-  list : path.join(__dirname, "/testdata/sites.txt")
+  list : path.join(__dirname, "../archives/sites.txt")
 });
 
 // Conditional async testing, akin to Jasmine's waitsFor()
@@ -76,6 +76,7 @@ describe("Node Server Request Listener Function", function() {
       function() { return res._ended; },
       function(){
         var fileContents = fs.readFileSync(archive.paths.list, 'utf8');
+        console.log('THIS IS A THING: ', archive.paths.list)
         expect(res._responseCode).to.equal(302);
         expect(fileContents).to.equal(url + "\n");
         done();
