@@ -32,11 +32,18 @@ exports.readListOfUrls = function(){
       throw error;
     }
 
-    console.log(data);
+    return data.split("\n");
   });
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(url){
+  var urls = readListOfUrls().slice();
+  for (var i = 0; i < urls.length; i++){
+    if(url === urls[i]){
+      return true;
+    }
+  }
+  return false;
 };
 
 exports.addUrlToList = function(asset){
