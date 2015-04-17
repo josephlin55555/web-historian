@@ -10,6 +10,7 @@ exports.headers = headers = {
   'Content-Type': "text/html"
 };
 
+//remember that node is asynchronous
 exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
@@ -36,7 +37,7 @@ exports.serveAssets = function(res, asset, callback) {
         // res.writeHead(200, exports.headers);
         // res.write(data1);
       });
-    } else {
+    } else { //not having this else statement will cause pain
       res.end(data);
     }
     //response is archived
