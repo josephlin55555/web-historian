@@ -13,28 +13,34 @@ exports.headers = headers = {
 exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
-  console.log('ASSET:' + asset);
   if(asset === "/"){
-    console.log('TRIGGERED IF')
     asset += 'index.html';
   }
 
   fs.readFile(archive.paths.archivedSites + asset, 'utf8', function(error, data) {
-    console.log('ARCHIVECHECK:'+archive.paths.archivedSites+asset)
+    // console.log('ARCHIVECHECK:' + archive.paths.archivedSites + asset)
     if(error) {
       //checking in public resource
-      fs.readFile(archive.paths.siteAssets + asset,'utf8', function(error1, data1) {
-        console.log('ASSETSCHECK:' + archive.paths.siteAssets+asset);
-        if(error1) {
-          res.writeHead(404, headers);
-          res.end('404');
+      fs.readFile(archive.paths.siteAssets + asset,'utf8', function(error, data) {
+        if(error) {
+          // console.log('THIS SHOULD NOT BE TRIGGERED');
+          res.writeHead(404, exports.headers);
+          res.end(data);
+        } else {
+          res.end(data);
         }
         // response has siteAsset
-        res.end(data1);
+
+        // console.log('ASSETSCHECK:' + archive.paths.siteAssets + asset);
+        // console.log('HERE BE DATERS:'+ data1);
+        // res.writeHead(200, exports.headers);
+        // res.write(data1);
       });
+    } else {
+      res.end(data);
     }
     //response is archived
-    res.end(data);
+    // res.writeHead(200,exports.headers);
   });
 
 };
@@ -46,7 +52,6 @@ exports.collectData = function(request, callback){
   });
   request.on('end', function(){
     data = "\"" + data.slice(4) + "\"";
-    console.log(data)
     callback(JSON.parse(data));
   });
 };
