@@ -126,3 +126,17 @@ describe("html fetcher helpers", function(){
   });
 
 });
+
+describe("thingtest", function(){
+
+  it("should be able to check if urls are in the list", function(done){
+    // archive.downloadUrls();
+    var flag;
+    archive.isUrlInList('example1.com', function(val){
+      flag = val;
+      expect(flag).to.equal(true);
+      done();
+    });
+  });
+
+});

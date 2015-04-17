@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var httpReq = require('http-request');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -25,25 +26,35 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(){
+exports.readListOfUrls = function(cb){
 
-  fs.readFile("../archives/sites.txt", 'utf-8', function(error, data) {
+  fs.readFile("archives/sites.txt", 'utf-8', function(error, data) {
     if(error) {
       throw error;
     }
+    //run callback on the array
+    return cb(data.split("\n")); //split takes a string, and based on the delimiter, returns an array
 
-    return data.split("\n");
   });
 };
 
-exports.isUrlInList = function(url){
-  var urls = readListOfUrls().slice();
-  for (var i = 0; i < urls.length; i++){
-    if(url === urls[i]){
-      return true;
+exports.isUrlInList = function(url, cb){
+  // console.log(this.readListOfUrls(function(){return 'test'}));
+
+  this.readListOfUrls(function(urlArr){
+    if(urlArr.indexOf(url) === -1){
+      cb(false);
+    } else {
+      cb(true);
     }
-  }
-  return false;
+  });
+  // console.log(urls);
+  // for (var i = 0; i < urls.length; i++){
+  //   if(url === urls[i]){
+  //     return true;
+  //   }
+  // }
+  // return false;
 };
 
 exports.addUrlToList = function(asset){
@@ -51,13 +62,24 @@ exports.addUrlToList = function(asset){
     if(error){
       throw error;
     }
-    console.log(asset + " ", "appended to sites.txt")
-  }
-  )
+    console.log(asset + " ", "appended to sites.txt");
+  });
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(url, cb){
+  fs.readFile(exports.path.list, 'utf8', function(error, data){
+    if(error){
+      cb(false);
+    } else {
+      cb(true);
+    }
+  });
 };
 
-exports.downloadUrls = function(){
+exports.downloadUrls = function(urls){
+  _.each(urls, function(url) {
+    if(!url){ return; }
+    request('http://' + url).pipe(fs.createWriteStream(exports.paths.archivedSites + "/" + url));
+  });
+  return true;
 };

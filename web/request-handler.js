@@ -6,8 +6,7 @@ var hHelpers = require('./http-helpers.js')
 var sendResponse = function(req, res, statusCode){
   statusCode = statusCode || 200;
   res.writeHead(statusCode, hHelpers.headers);
-  var truncatedUrl = req.url.substring(1);
-  hHelpers.serveAssets(res, truncatedUrl);
+  hHelpers.serveAssets(res, req.url);
 };
 
 var postResponse = function(req, res,statusCode){

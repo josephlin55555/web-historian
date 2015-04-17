@@ -13,19 +13,30 @@ exports.headers = headers = {
 exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
-  var target = asset || 'web/public/index.html';
-  if(asset){
-    target = "archives/sites/" + target;
+  console.log('ASSET:' + asset);
+  if(asset === "/"){
+    console.log('TRIGGERED IF')
+    asset += 'index.html';
   }
 
-
-  fs.readFile(target, 'utf-8', function(error, data) {
+  fs.readFile(archive.paths.archivedSites + asset, 'utf8', function(error, data) {
+    console.log('ARCHIVECHECK:'+archive.paths.archivedSites+asset)
     if(error) {
-      res.writeHead(404, headers);
-      res.end(data);
+      //checking in public resource
+      fs.readFile(archive.paths.siteAssets + asset,'utf8', function(error1, data1) {
+        console.log('ASSETSCHECK:' + archive.paths.siteAssets+asset);
+        if(error1) {
+          res.writeHead(404, headers);
+          res.end('404');
+        }
+        // response has siteAsset
+        res.end(data1);
+      });
     }
+    //response is archived
     res.end(data);
   });
+
 };
 
 exports.collectData = function(request, callback){
